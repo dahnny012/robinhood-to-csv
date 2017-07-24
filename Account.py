@@ -89,7 +89,7 @@ class Account:
                     total += transaction['profit']
             stock.realized_gains = total
 
-            
+        #self.delete_shares()
         self.map_stocks(sort_stocks)
         self.map_stocks(reduce_chain)
         self.map_stocks(update_price_avg)
@@ -100,6 +100,15 @@ class Account:
             self.stocks[row['symbol']] = Stock(row['symbol'])
         stock = self.stocks[row['symbol']]
         stock.add(row)
+
+    def delete_shares(self):
+        to_delete = []
+        for symbol in self.stocks:
+            if(self.stocks[symbol].num_shares <= 0.0):
+                to_delete.append(symbol)
+
+        for symbol in to_delete:
+            del self.stocks[symbol]
 
     def map_stocks(self,function):
         for symbol in self.stocks:
