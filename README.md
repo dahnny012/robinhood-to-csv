@@ -9,3 +9,6 @@ pip install -r requirements.txt
 
 #### Run:
 python csv-export.py
+ (during the prompt save the file as rh.csv)
+
+python main.py
