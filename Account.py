@@ -68,7 +68,7 @@ class Account:
             total_shares = 0
             for transaction in stock.chain:
                 if(transaction['side'] == 'buy' and transaction['cumulative_quantity'] >= 1):
-                    if(transaction['symbol'] == 'MU'):
+                    #if(transaction['symbol'] == 'MU'):
                         #print transaction['cumulative_quantity']
                         #print transaction['price']
                     total_shares += transaction['cumulative_quantity']
