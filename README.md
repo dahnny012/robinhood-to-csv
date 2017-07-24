@@ -12,3 +12,8 @@ python csv-export.py
  (during the prompt save the file as rh.csv)
 
 python main.py
+
+#### Preview
+
+![Image of Preview](https://raw.githubusercontent.com/dahnny012/robinhood-to-csv/master/sample.png)
+
