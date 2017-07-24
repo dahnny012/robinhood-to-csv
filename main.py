@@ -28,7 +28,7 @@ def print_chain_to_files(stock):
         stock_csv.writerow(['symbol','total', 'avg_price', 'current_price', 'gain if sold', 'percent_gain', 'realized_gains', 'total gains'])
         stock_csv.writerow([stock.symbol, stock.num_shares, stock.avg_price, current_price, gain, percent_gain, stock.realized_gains, total_gains])
         stock_csv.writerow('')
-        stock_csv.writerow(keys + ['gain/profit', 'percent_gain'])
+        stock_csv.writerow(keys + ['gain/profit', 'percent_gain', 'timestamp'])
         for transaction in stock.chain:
             row = []
             for key in keys:
@@ -38,6 +38,8 @@ def print_chain_to_files(stock):
                 row.append(100 - (float(transaction['price']) * 100.0 / current_price))
             if(transaction['side'] == 'sell'):
                 row.append(float(transaction['profit']))
+                row.append(float(0))
+            row.append(transaction['timestamp'])
             stock_csv.writerow(row)
 
 
@@ -77,10 +79,15 @@ def merge_csv_into_xls():
                     elif(colx == 7):
                         #total_gains = gains if sold + realized gains
                         ws.write(rowx, colx, xlwt.Formula(gains_if_sold + "+" + realized_gains)) 
-                elif(rowx >= 4 and colx == 3):
-                    ws.write(rowx, colx, xlwt.Formula(current_price + "*" + shares + "-" + price_bought  + "*" + shares))
-                elif(rowx >= 4 and colx == 4):
-                    ws.write(rowx, colx, xlwt.Formula(str(100.0) + "-" + price_bought + "*" + str(100.0) + "/" + current_price))
+                elif(row[2] == 'buy'):
+                    if(rowx >= 4 and colx == 3):
+                        ws.write(rowx, colx, xlwt.Formula(current_price + "*" + shares + "-" + price_bought  + "*" + shares))
+                    elif(rowx >= 4 and colx == 4):
+                        ws.write(rowx, colx, xlwt.Formula(str(100.0) + "-" + price_bought + "*" + str(100.0) + "/" + current_price))
+                    else:
+                        ws.write(rowx, colx, value)
+                elif(row[2] == 'sell' and rowx >=4 and (colx == 3 or colx == 4)):
+                    ws.write(rowx, colx, float(value))
                 else:
                     ws.write(rowx, colx, value)
     wb.save(path+"portfolio.xls")

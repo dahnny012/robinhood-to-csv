@@ -16,6 +16,7 @@ class Stock:
         new_row['cumulative_quantity'] = float(new_row['cumulative_quantity'])
         new_row['quantity'] = float(new_row['quantity'])
         new_row['price'] = float(new_row['price'])
+        new_row['timestamp'] = new_row['timestamp']
         self.chain.append(new_row)
 
     def update(self, row):

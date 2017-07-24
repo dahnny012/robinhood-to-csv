@@ -16,11 +16,16 @@ class Account:
             chain.sort(key=lambda x: x['price'], reverse=False)
 
         def reduce_chain(stock):
-            def reduce_forwards(buy_chain, transaction):
+            def reduce(buy_chain, transaction, direction):
                 profit = 0.0
                 total_sold = transaction['cumulative_quantity']
                 #print('selling ' + str(total_sold))
-                for buy_transaction in buy_chain:
+                if(direction == ">"):
+                    buy_chain_range = range(0, len(buy_chain))
+                else:
+                    buy_chain_range = range(len(buy_chain) - 1, - 1, -1)
+                for i in buy_chain_range:
+                    buy_transaction = buy_chain[i]
                     if(total_sold == 0.0):
                         break
                     if(buy_transaction['cumulative_quantity'] > 0.0):
@@ -59,8 +64,12 @@ class Account:
 
             chain = stock.chain
             (buy_chain, sell_chain) = group_chain(chain)
-            for transaction in sell_chain:
-                reduce_forwards(buy_chain, transaction)
+            for i in range(0,len(sell_chain)):
+                transaction = sell_chain[i]
+                if(i <= len(sell_chain) / 2):
+                    reduce(buy_chain, transaction, ">")
+                else:
+                    reduce(buy_chain, transaction, "<")
             stock.chain = buy_chain + sell_chain
 
         def update_price_avg(stock):
@@ -89,7 +98,7 @@ class Account:
                     total += transaction['profit']
             stock.realized_gains = total
 
-        #self.delete_shares()
+        self.delete_shares()
         self.map_stocks(sort_stocks)
         self.map_stocks(reduce_chain)
         self.map_stocks(update_price_avg)
